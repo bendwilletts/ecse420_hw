@@ -6,19 +6,16 @@ import java.util.concurrent.Executors;
 
 public class MatrixMultiplication {
 	
-	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2;
-	private static double[][] parallel_out = new double[MATRIX_SIZE][MATRIX_SIZE];
+	private static final int NUMBER_THREADS = 4;
+	private static final int MATRIX_SIZE = 100;
 
-        public static void main(String[] args) {
+        public static void main(String[] args) throws InterruptedException {
 		
 		// Generate two random matrices, same size
-//		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-//		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-        double[][] a = {{1,2},{3,4}};
-        double[][] b = {{2,0},{1,2}};		
-		System.out.println(Arrays.deepToString(sequentialMultiplyMatrix(a, b)));
-		//parallelMultiplyMatrix(a, b);	
+		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);	
+		System.out.println("Sequential Multiply: " + Arrays.deepToString(sequentialMultiplyMatrix(a, b)));
+		System.out.println("Parallel Multiply: " +Arrays.deepToString(parallelMultiplyMatrix(a, b)));	
 	}
 	
 	/**
@@ -51,12 +48,22 @@ public class MatrixMultiplication {
 	 * @param a is the first matrix
 	 * @param b is the second matrix
 	 * @return the result of the multiplication
+	 * @throws InterruptedException 
 	 * */
-       public static double[][] parallelMultiplyMatrix(double[][] a, double[][] b) {
-         ExecutorService executeMult = Executors.newFixedThreadPool(NUMBER_THREADS);
-         //Create thread list, interate Executor to run
-         // Divide matrix columns by number of threads
+       public static double[][] parallelMultiplyMatrix(double[][] a, double[][] b) throws InterruptedException {
          
+         double[][] output = new double[MATRIX_SIZE][MATRIX_SIZE]; //Output matrix
+         MultiplyTask threads[] = new MultiplyTask[NUMBER_THREADS]; //Thread list where tasks are added and run
+    
+         for (int j = 0; j < a.length; j++) { //Row by row, create new Task and run if thread is not busy
+             if(threads[j%NUMBER_THREADS] != null){// If thread is busy, wait
+               threads[j%NUMBER_THREADS].join();
+             }
+             threads[j%NUMBER_THREADS] = new MultiplyTask(a,b,output,j);
+             threads[j%NUMBER_THREADS].start();
+         }
+
+         return output;
          
 	}
         
@@ -74,27 +81,6 @@ public class MatrixMultiplication {
             }
         }
         return matrix;
-    }
-        
-    class multiplyTask implements Runnable{
-      private double[][] a;
-      private double[][] b;
-      private int start;
-      private int end;
-      public multiplyTask(double[][] _a, double[][] _b, int _start, int _end){
-        a = _a;
-        b = _b;
-        start = _start;
-        end = _end;
-      }
-      
-      public void run(){
-        for(int i = start; i < end; i++){
-          for(int j = 0; j<a.length; j++){
-            parallel_out[j][i] = computeMult(a,b,i,j);
-          }
-        }
-      }
     }
 	
 }
