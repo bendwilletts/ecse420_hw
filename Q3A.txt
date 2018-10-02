@@ -1,0 +1,44 @@
+3.1. Modify the class public class DiningPhilosophers in the source code to simulate the
+behavior of the philosophers for any number n of them, where each philosopher is a
+thread and the chopsticks are shared objects. Notice that you must prevent a situation
+where two philosophers hold the same chopstick at the same time. Notice that in this
+program philosophers should be eventually deadlocked.
+
+a:
+Console Trace:
+[...]
+Philosopher 4 : Put down left fork
+Philosopher 5 : Pick up left fork
+Philosopher 4 : Thinking
+Philosopher 3 : Pick up right fork
+Philosopher 3 : Eating
+Philosopher 3 : Put down right fork
+Philosopher 3 : Put down left fork
+Philosopher 4 : Pick up left fork
+Philosopher 3 : Thinking
+Philosopher 2 : Pick up right fork
+Philosopher 2 : Eating
+Philosopher 2 : Put down right fork
+Philosopher 2 : Put down left fork
+Philosopher 3 : Pick up left fork
+Philosopher 2 : Thinking
+Philosopher 2 : Pick up left fork
+
+(DEADLOCK)
+
+
+3.2. Amend your program so that it never reaches a state where philosophers are
+deadlocked, that is, it is never the case that each philosopher holds one chop- stick and
+is stuck waiting for another to get the second chopstick. Explain your solution to avoid
+deadlock.
+
+a:
+We used preemption to avoid deadlock. A philosopher cannot hold on to one chopstick unless it gets both.
+This was implemented using Reentrant Locks as chopsticks. If a philosopher is denied a chopstick, it releases any it is holding.
+
+3.3. Amend your program so that no philosopher ever starves. Explain your solution to avoid
+starvation.
+
+a:
+In order to avoid starvation, thread priority is increased every time a philosopher waits and is set back to minimum when it eats.
+This way, philosophers who haven't eated in a while will be given priority over those who have.
