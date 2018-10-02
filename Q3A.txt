@@ -25,7 +25,7 @@ Philosopher 2 : Thinking
 Philosopher 2 : Pick up left fork
 
 (DEADLOCK)
-
+Code: Class Philosopher
 
 3.2. Amend your program so that it never reaches a state where philosophers are
 deadlocked, that is, it is never the case that each philosopher holds one chop- stick and
@@ -35,10 +35,11 @@ deadlock.
 a:
 We used preemption to avoid deadlock. A philosopher cannot hold on to one chopstick unless it gets both.
 This was implemented using Reentrant Locks as chopsticks. If a philosopher is denied a chopstick, it releases any it is holding.
-
+Code: Class Philosopher_2
 3.3. Amend your program so that no philosopher ever starves. Explain your solution to avoid
 starvation.
 
 a:
 In order to avoid starvation, thread priority is increased every time a philosopher waits and is set back to minimum when it eats.
 This way, philosophers who haven't eated in a while will be given priority over those who have.
+Code: Class Philosopher_1
