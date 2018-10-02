@@ -31,6 +31,11 @@ public class DiningPhilosophers {
         }
 	}
 
+	/**
+	 * Philosopher class for Question 3.3 - No deadlock - No starvation
+	 * @author natha
+	 *
+	 */
 	public static class Philosopher implements Runnable {
 		private ReentrantLock leftCS;
 		private ReentrantLock rightCS;
